@@ -2,9 +2,37 @@
   "name": "react-enhanced-textarea",
   "version": "0.0.1",
   "description": "React enhanced textarea",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "prepare": "yarn build",
+    "prepublishOnly": "yarn test && yarn lint",
+    "preversion": "yarn lint",
+    "version": "yarn format && git add -A src",
+    "postversion": "git push && git push --tags",
+    "test": "jest --config jestconfig.json",
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json"
+  },
   "repository": "git@github.com:abelchee/react-enhanced-textarea.git",
+  "bugs": {
+    "url": "https://github.com/abelchee/react-enhanced-textarea/issues"
+  },
+  "files:": [
+    "lib/**/*"
+  ],
+  "homepage": "https://github.com/abelchee/react-enhanced-textarea",
   "author": "Abel Chee <abel.chee@gmail.com>",
   "license": "MIT",
-  "private": false
+  "private": false,
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "jest": "^24.9.0",
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.0.2",
+    "tslint": "^5.19.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.6.2"
+  }
 }
