@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as renderer from 'react-test-renderer';
+import { mount } from 'enzyme';
 import EnhancedTextarea from '../EnhancedTextarea';
 
 describe('EnhancedTextarea', () => {
@@ -19,11 +20,39 @@ describe('EnhancedTextarea', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  test('EnhancedTextarea ref works fine', () => {
-    const component = renderer.create(<EnhancedTextarea value="ABC" />);
-    const testInstance = component.root;
-    const instance = testInstance.findByType(EnhancedTextarea);
+  test('EnhancedTextarea value should be set', () => {
+    const wrapper = mount(<EnhancedTextarea value="123" />);
+    const comp = wrapper.instance() as EnhancedTextarea;
+    expect(comp.value).toBe('123');
+    wrapper.setProps({
+      value: '456',
+    });
+    wrapper.update();
+    expect(comp.value).toBe('456');
+  });
 
-    expect(instance).toBe('test-class');
+  test('EnhancedTextarea default value should be set once', () => {
+    const wrapper = mount(<EnhancedTextarea defaultValue="123" />);
+    const comp = wrapper.instance() as EnhancedTextarea;
+    expect(comp.value).toBe('123');
+    wrapper.setProps({
+      defaultValue: '456',
+    });
+    wrapper.update();
+    expect(comp.value).toBe('123');
+  });
+
+  test('EnhancedTextarea select start and end', () => {
+    const wrapper = mount(<EnhancedTextarea defaultValue="AAA*BBBB*CCC" />);
+    const comp = wrapper.instance() as EnhancedTextarea;
+    comp.selectionStart = 4;
+    comp.selectionEnd = 8;
+    expect(comp.selectedText).toBe('BBBB');
+    comp.replaceSelectedText('GGGG');
+    expect(comp.value).toBe('AAA*GGGG*CCC');
+    comp.select({ from: 4, to: 8 });
+    expect(comp.selectedText).toBe('GGGG');
+    comp.select({ from: 4, length: 8 });
+    expect(comp.selectedText).toBe('GGGG*CCC');
   });
 });

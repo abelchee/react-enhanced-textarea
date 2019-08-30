@@ -73,7 +73,7 @@ export default class EnhancedTextarea extends React.Component<IEnhancedTextareaP
     this.textarea.selectionEnd = position;
   }
 
-  public replaceSelectedText({ text }: { text: string }) {
+  public replaceSelectedText(text: string) {
     const originalSelectionStart = this.textarea.selectionStart;
     const originalSelectionEnd = this.textarea.selectionEnd;
     this.replaceText({
@@ -83,8 +83,16 @@ export default class EnhancedTextarea extends React.Component<IEnhancedTextareaP
     });
   }
 
-  public select({ from, to, length }: { from: number; to: number | null | undefined; length: number }) {
-    this.textarea.setSelectionRange(from, to || from + length);
+  public select({
+    from,
+    to,
+    length,
+  }: {
+    from: number;
+    to?: number | null | undefined;
+    length?: number | null | undefined;
+  }) {
+    this.textarea.setSelectionRange(from, to || from + (length || 0));
   }
 
   public putCursorTo(location: number) {
