@@ -33,6 +33,7 @@ export default class EnhancedTextarea extends React.Component<IEnhancedTextareaP
   constructor(props: IEnhancedTextareaProps) {
     super(props);
     this.textareaRef = React.createRef();
+    this.onChange = this.onChange.bind(this);
   }
 
   public get textarea(): HTMLTextAreaElement {
@@ -84,10 +85,10 @@ export default class EnhancedTextarea extends React.Component<IEnhancedTextareaP
   }
 
   public select({
-                  from,
-                  to,
-                  length,
-                }: {
+    from,
+    to,
+    length,
+  }: {
     from: number;
     to?: number | null | undefined;
     length?: number | null | undefined;
@@ -117,21 +118,21 @@ export default class EnhancedTextarea extends React.Component<IEnhancedTextareaP
     return (
       <textarea
         id={this.props.id}
-    className={this.props.className}
-    ref={this.textareaRef}
-    style={this.props.style}
-    rows={this.props.rows}
-    wrap="virtual"
-    autoComplete="off"
-    defaultValue={this.props.defaultValue}
-    value={this.props.value}
-    onKeyPress={this.props.onKeyPress}
-    onKeyDown={this.props.onKeyDown}
-    onChange={this.onChange}
-    autoFocus={this.props.autoFocus}
-    placeholder="Please enter in 'Markdown' syntax"
+        className={this.props.className}
+        ref={this.textareaRef}
+        style={this.props.style}
+        rows={this.props.rows}
+        wrap="virtual"
+        autoComplete="off"
+        defaultValue={this.props.defaultValue}
+        value={this.props.value}
+        onKeyPress={this.props.onKeyPress}
+        onKeyDown={this.props.onKeyDown}
+        onChange={this.onChange}
+        autoFocus={this.props.autoFocus}
+        placeholder="Please enter in 'Markdown' syntax"
       />
-  );
+    );
   }
 
   private onChange(event: ChangeEvent<HTMLTextAreaElement>) {
