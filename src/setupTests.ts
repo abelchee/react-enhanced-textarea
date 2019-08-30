@@ -22,10 +22,10 @@ global.document = window.document;
 global.navigator = {
   userAgent: 'node.js',
 };
-global.requestAnimationFrame = function(callback: any) {
+global.requestAnimationFrame = (callback: any) => {
   return setTimeout(callback, 0);
 };
-global.cancelAnimationFrame = function(id: any) {
+global.cancelAnimationFrame = (id: any) => {
   clearTimeout(id);
 };
 copyProps(window, global);
