@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as renderer from 'react-test-renderer';
 import { mount } from 'enzyme';
-import EnhancedTextarea from '../EnhancedTextarea';
+import EnhancedTextarea from '../index';
 
 describe('EnhancedTextarea', () => {
   test('EnhancedTextarea should initialize as it is', () => {
