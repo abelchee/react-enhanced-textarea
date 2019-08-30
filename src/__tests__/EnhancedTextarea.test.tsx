@@ -2,12 +2,20 @@ import * as React from 'react';
 import * as renderer from 'react-test-renderer';
 import EnhancedTextarea from '../EnhancedTextarea';
 
-test("Component should show 'red' text 'Hello World'", () => {
-  const component = renderer.create(<EnhancedTextarea text="World" />);
-  const testInstance = component.root;
+describe('EnhancedTextarea', () => {
+  test('EnhancedTextarea should initialize as it is', () => {
+    const component = renderer.create(
+      <EnhancedTextarea id="123" className="test-class" rows={5} autoFocus value="ABC" />,
+    );
+    const testInstance = component.root;
+    const { props } = testInstance.findByType(EnhancedTextarea);
 
-  expect(testInstance.findByType(EnhancedTextarea).props.text).toBe('World');
+    expect(props.className).toBe('test-class');
+    expect(props.rows).toBe(5);
+    expect(props.value).toBe('ABC');
+    expect(props.id).toBe('123');
 
-  const tree = component.toJSON();
-  expect(tree).toMatchSnapshot();
+    const tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  });
 });

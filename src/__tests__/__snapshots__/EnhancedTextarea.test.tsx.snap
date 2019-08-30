@@ -1,14 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Component should show 'red' text 'Hello World' 1`] = `
-<div
-  style={
-    Object {
-      "color": "red",
-    }
-  }
->
-  Hello 
-  World
-</div>
+exports[`EnhancedTextarea EnhancedTextarea should initialize as it is 1`] = `
+<textarea
+  autoComplete="off"
+  autoFocus={true}
+  className="test-class"
+  id="123"
+  onChange={[Function]}
+  placeholder="Please enter in 'Markdown' syntax"
+  rows={5}
+  value="ABC"
+  wrap="virtual"
+/>
 `;
