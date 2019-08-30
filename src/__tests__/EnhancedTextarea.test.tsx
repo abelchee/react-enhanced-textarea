@@ -18,4 +18,12 @@ describe('EnhancedTextarea', () => {
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
+
+  test('EnhancedTextarea ref works fine', () => {
+    const component = renderer.create(<EnhancedTextarea value="ABC" />);
+    const testInstance = component.root;
+    const instance = testInstance.findByType(EnhancedTextarea);
+
+    expect(instance).toBe('test-class');
+  });
 });
