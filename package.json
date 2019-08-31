@@ -1,6 +1,6 @@
 {
-  "name": "react-enhanced-textarea",
-  "version": "0.0.3",
+  "name": "@abel.chee/react-enhanced-textarea",
+  "version": "1.0.0",
   "description": "React enhanced textarea",
   "main": "build/index.js",
   "module": "build/index.es.js",
@@ -17,7 +17,10 @@
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\"",
     "lint": "tslint -p tsconfig.json"
   },
-  "repository": "git@github.com:abelchee/react-enhanced-textarea.git",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/abelchee/react-enhanced-textarea.git"
+  },
   "bugs": {
     "url": "https://github.com/abelchee/react-enhanced-textarea/issues"
   },
