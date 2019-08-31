@@ -28,7 +28,7 @@ export default class EnhancedTextarea extends React.PureComponent<IEnhancedTexta
     value: undefined,
   };
 
-  private textareaRef: RefObject<HTMLTextAreaElement>;
+  private readonly textareaRef: RefObject<HTMLTextAreaElement>;
 
   constructor(props: IEnhancedTextareaProps) {
     super(props);
