@@ -1,5 +1,5 @@
 {
-  "name": "@abel.chee/react-enhanced-textarea",
+  "name": "react-enhanced-textarea",
   "version": "1.0.0",
   "description": "React enhanced textarea",
   "main": "build/index.js",
