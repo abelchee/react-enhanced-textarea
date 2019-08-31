@@ -14,7 +14,7 @@ export interface IEnhancedTextareaProps {
   onKeyPress: (event: React.KeyboardEvent) => {} | undefined;
 }
 
-export default class EnhancedTextarea extends React.Component<IEnhancedTextareaProps> {
+export default class EnhancedTextarea extends React.PureComponent<IEnhancedTextareaProps> {
   public static defaultProps = {
     autoFocus: false,
     className: undefined,
