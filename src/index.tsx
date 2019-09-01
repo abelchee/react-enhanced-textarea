@@ -9,7 +9,7 @@ export interface IEnhancedTextareaProps {
   defaultValue?: string | undefined;
   value?: string | undefined;
   autoFocus?: boolean;
-  onChange?: (event: React.ChangeEvent) => {} | undefined;
+  onChange?: (textarea?: HTMLTextAreaElement) => {} | undefined;
   onKeyDown?: (event: React.KeyboardEvent) => {} | undefined;
   onKeyPress?: (event: React.KeyboardEvent) => {} | undefined;
 }
@@ -38,9 +38,11 @@ export interface IEnhancedTextareaHandles {
 
 class EnhancedTextareaHandles implements IEnhancedTextareaHandles {
   private textareaRef: RefObject<HTMLTextAreaElement>;
+  private onChange: () => void;
 
-  constructor(textareaRef: RefObject<HTMLTextAreaElement>) {
+  constructor(textareaRef: RefObject<HTMLTextAreaElement>, onChange: () => void) {
     this.textareaRef = textareaRef;
+    this.onChange = onChange;
   }
 
   public get textarea(): HTMLTextAreaElement | null {
@@ -57,6 +59,7 @@ class EnhancedTextareaHandles implements IEnhancedTextareaHandles {
 
   public set value(v) {
     this.textarea!.value = v;
+    this.onChange();
   }
 
   public get selectedText() {
@@ -92,6 +95,7 @@ class EnhancedTextareaHandles implements IEnhancedTextareaHandles {
       text,
       to: originalSelectionEnd,
     });
+    this.onChange();
   }
 
   public select({
@@ -115,6 +119,7 @@ class EnhancedTextareaHandles implements IEnhancedTextareaHandles {
     const textRight = this.textarea!.value.substring(to);
     this.textarea!.value = `${textLeft}${text}${textRight}`;
     this.textarea!.selectionEnd = from + text.length;
+    this.onChange();
   }
 }
 
@@ -123,8 +128,12 @@ const EnhancedTextarea: React.RefForwardingComponent<IEnhancedTextareaHandles, I
   ref,
 ) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  useImperativeHandle(ref, () => new EnhancedTextareaHandles(textareaRef));
+  function onChange() {
+    if (props.onChange) {
+      props.onChange(textareaRef.current!);
+    }
+  }
+  useImperativeHandle(ref, () => new EnhancedTextareaHandles(textareaRef, onChange));
   return (
     <textarea
       id={props.id}
@@ -138,7 +147,7 @@ const EnhancedTextarea: React.RefForwardingComponent<IEnhancedTextareaHandles, I
       value={props.value}
       onKeyPress={props.onKeyPress}
       onKeyDown={props.onKeyDown}
-      onChange={props.onChange}
+      onChange={onChange}
       autoFocus={props.autoFocus}
       placeholder="Please enter in 'Markdown' syntax"
     />
