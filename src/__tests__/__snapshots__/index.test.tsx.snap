@@ -6,6 +6,7 @@ exports[`EnhancedTextarea EnhancedTextarea should initialize as it is 1`] = `
   autoFocus={true}
   className="test-class"
   id="123"
+  onChange={[Function]}
   placeholder="Please enter in 'Markdown' syntax"
   rows={5}
   value="ABC"
