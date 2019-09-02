@@ -9,7 +9,7 @@ export interface IEnhancedTextareaProps {
   defaultValue?: string | undefined;
   value?: string | undefined;
   autoFocus?: boolean;
-  lineMarkers: string[] | undefined;
+  lineMarkers?: string[] | undefined;
   onChange?: (textarea?: HTMLTextAreaElement) => {} | undefined;
   onKeyDown?: (event: React.KeyboardEvent) => {} | undefined;
   onKeyPress?: (event: React.KeyboardEvent) => {} | undefined;
