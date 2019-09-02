@@ -8,6 +8,7 @@ export interface IEnhancedTextareaProps {
   rows?: number;
   defaultValue?: string | undefined;
   value?: string | undefined;
+  placeholder?: string | undefined;
   autoFocus?: boolean;
   lineMarkers?: string[] | undefined;
   onChange?: (textarea?: HTMLTextAreaElement) => {} | undefined;
@@ -249,7 +250,7 @@ const EnhancedTextarea: React.RefForwardingComponent<IEnhancedTextareaHandles, I
       onKeyDown={onKeyDown}
       onChange={onChange}
       autoFocus={props.autoFocus}
-      placeholder="Please enter in 'Markdown' syntax"
+      placeholder={props.placeholder}
     />
   );
 };
@@ -266,6 +267,7 @@ EnhancedTextarea.defaultProps = {
   rows: 5,
   style: undefined,
   value: undefined,
+  placeholder: undefined,
 };
 
 export default forwardRef(EnhancedTextarea);
