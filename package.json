@@ -9,7 +9,7 @@
   "scripts": {
     "prepare": "yarn build",
     "prepublishOnly": "yarn test && yarn lint",
-    "preversion": "yarn lint",
+    "preversion": "yarn lint && yarn test",
     "version": "yarn format && git add -A src",
     "postversion": "git push && git push --tags",
     "test": "jest",
