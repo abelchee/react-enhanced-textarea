@@ -9,6 +9,7 @@ export interface IEnhancedTextareaProps {
   defaultValue?: string | undefined;
   value?: string | undefined;
   autoFocus?: boolean;
+  lineMarkers: string[] | undefined;
   onChange?: (textarea?: HTMLTextAreaElement) => {} | undefined;
   onKeyDown?: (event: React.KeyboardEvent) => {} | undefined;
   onKeyPress?: (event: React.KeyboardEvent) => {} | undefined;
@@ -21,8 +22,11 @@ export interface IEnhancedTextareaHandles {
   selectionStart: number;
   selectionEnd: number;
   value: string;
+
   focus(): void;
+
   replaceSelectedText(text: string): void;
+
   select({
     from,
     to,
@@ -32,17 +36,25 @@ export interface IEnhancedTextareaHandles {
     to?: number | null | undefined;
     length?: number | null | undefined;
   }): void;
+
   putCursorTo(location: number): void;
+
   replaceText({ text, from, to }: { text: string; from: number; to: number }): void;
+
+  toggleMarker({ prefix, suffix, defaultText }: { prefix: string; suffix: string; defaultText: string }): void;
+
+  toggleLineMarker(marker: string): void;
 }
 
 class EnhancedTextareaHandles implements IEnhancedTextareaHandles {
   private textareaRef: RefObject<HTMLTextAreaElement>;
   private onChange: () => void;
+  private lineMarkers: string[];
 
-  constructor(textareaRef: RefObject<HTMLTextAreaElement>, onChange: () => void) {
+  constructor(textareaRef: RefObject<HTMLTextAreaElement>, onChange: () => void, lineMarkers: string[] | undefined) {
     this.textareaRef = textareaRef;
     this.onChange = onChange;
+    this.lineMarkers = lineMarkers || [];
   }
 
   public get textarea(): HTMLTextAreaElement | null {
@@ -121,6 +133,63 @@ class EnhancedTextareaHandles implements IEnhancedTextareaHandles {
     this.textarea!.selectionEnd = from + text.length;
     this.onChange();
   }
+
+  public toggleMarker({ prefix, suffix, defaultText }: { prefix: string; suffix: string; defaultText: string }) {
+    this.focus();
+    const text = this.selectedText || defaultText;
+    const { selectionStart, selectionEnd } = this;
+    if (
+      this.value.substr(selectionStart - prefix.length, prefix.length) === prefix &&
+      this.value.substr(selectionEnd, suffix.length) === suffix
+    ) {
+      this.replaceText({
+        from: selectionStart - prefix.length,
+        text: text === defaultText ? '' : text,
+        to: selectionEnd + suffix.length,
+      });
+      if (text !== defaultText) {
+        this.select({
+          from: selectionStart - prefix.length,
+          length: text.length,
+        });
+      }
+    } else {
+      this.replaceSelectedText(`${prefix}${text}${suffix}`);
+      this.select({
+        from: selectionStart + prefix.length,
+        length: text.length,
+      });
+    }
+  }
+
+  public toggleLineMarker(marker: string) {
+    this.focus();
+    const text = this.value;
+    const { selectionStart, selectionEnd } = this;
+    const firstLineStart = text.substring(0, selectionStart).lastIndexOf('\n') + 1;
+    const otherLineMarkers = this.lineMarkers.filter(it => it !== marker);
+    const newText = text
+      .substring(firstLineStart, selectionEnd)
+      .split('\n')
+      .map(line => {
+        if (line.indexOf(marker) === 0) {
+          return line.substring(marker.length);
+        }
+
+        const currentMarker = otherLineMarkers.find(it => line.indexOf(it) === 0);
+        if (currentMarker) {
+          return marker + line.substring(currentMarker.length);
+        }
+
+        return marker + line;
+      })
+      .join('\n');
+    this.replaceText({
+      from: firstLineStart,
+      text: newText,
+      to: selectionEnd,
+    });
+  }
 }
 
 const EnhancedTextarea: React.RefForwardingComponent<IEnhancedTextareaHandles, IEnhancedTextareaProps> = (
@@ -128,12 +197,14 @@ const EnhancedTextarea: React.RefForwardingComponent<IEnhancedTextareaHandles, I
   ref,
 ) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
   function onChange() {
     if (props.onChange) {
       props.onChange(textareaRef.current!);
     }
   }
-  useImperativeHandle(ref, () => new EnhancedTextareaHandles(textareaRef, onChange));
+
+  useImperativeHandle(ref, () => new EnhancedTextareaHandles(textareaRef, onChange, props.lineMarkers));
   return (
     <textarea
       id={props.id}
@@ -159,6 +230,7 @@ EnhancedTextarea.defaultProps = {
   className: undefined,
   defaultValue: undefined,
   id: undefined,
+  lineMarkers: [],
   onChange: undefined,
   onKeyDown: undefined,
   onKeyPress: undefined,
