@@ -209,7 +209,7 @@ const EnhancedTextarea: React.RefForwardingComponent<IEnhancedTextareaHandles, I
   function onKeyDown(e: React.KeyboardEvent) {
     if (e.key === 'Enter') {
       const startText = handlers.selectedFromLineStart;
-      const marker = props.lineMarkers!.find(m => startText.startsWith(m));
+      const marker = (props.lineMarkers || []).find(m => startText.startsWith(m));
       if (marker) {
         handlers.replaceSelectedText(`\n${marker}`);
         e.preventDefault();
