@@ -264,10 +264,10 @@ EnhancedTextarea.defaultProps = {
   onChange: undefined,
   onKeyDown: undefined,
   onKeyPress: undefined,
+  placeholder: undefined,
   rows: 5,
   style: undefined,
   value: undefined,
-  placeholder: undefined,
 };
 
 export default forwardRef(EnhancedTextarea);
