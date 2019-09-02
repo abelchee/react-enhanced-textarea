@@ -204,20 +204,49 @@ const EnhancedTextarea: React.RefForwardingComponent<IEnhancedTextareaHandles, I
     }
   }
 
-  useImperativeHandle(ref, () => new EnhancedTextareaHandles(textareaRef, onChange, props.lineMarkers));
+  const handlers = new EnhancedTextareaHandles(textareaRef, onChange, props.lineMarkers);
+
+  function onKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter') {
+      const startText = handlers.selectedFromLineStart;
+      const marker = props.lineMarkers!.find(m => startText.startsWith(m));
+      if (marker) {
+        handlers.replaceSelectedText(`\n${marker}`);
+        e.preventDefault();
+      }
+    } else {
+      if (props.onKeyDown) {
+        props.onKeyDown(e);
+      }
+    }
+  }
+
+  useImperativeHandle(ref, () => handlers);
+
+  let rows = props.rows!;
+  if (props.defaultValue) {
+    rows = Math.max(props.defaultValue.split('\n').length, rows);
+  }
+  if (textareaRef.current) {
+    const value = textareaRef.current.value;
+    if (value) {
+      rows = Math.max(value.split('\n').length, rows);
+    }
+  }
+
   return (
     <textarea
       id={props.id}
       className={props.className}
       ref={textareaRef}
       style={props.style}
-      rows={props.rows}
+      rows={rows}
       wrap="virtual"
       autoComplete="off"
       defaultValue={props.defaultValue}
       value={props.value}
       onKeyPress={props.onKeyPress}
-      onKeyDown={props.onKeyDown}
+      onKeyDown={onKeyDown}
       onChange={onChange}
       autoFocus={props.autoFocus}
       placeholder="Please enter in 'Markdown' syntax"
