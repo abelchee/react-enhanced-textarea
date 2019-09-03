@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { forwardRef, RefObject, useImperativeHandle, useRef } from 'react';
+import { forwardRef, RefObject, useImperativeHandle, useRef, useState } from 'react';
 
 export interface IEnhancedTextareaProps {
   id?: string | undefined;
@@ -198,10 +198,12 @@ const EnhancedTextarea: React.RefForwardingComponent<IEnhancedTextareaHandles, I
   ref,
 ) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [value, setValue] = useState(props.value || props.defaultValue);
 
   function onChange() {
     if (props.onChange) {
       props.onChange(textareaRef.current!);
+      setValue(textareaRef.current!.value);
     }
   }
 
@@ -224,16 +226,7 @@ const EnhancedTextarea: React.RefForwardingComponent<IEnhancedTextareaHandles, I
 
   useImperativeHandle(ref, () => handlers);
 
-  let rows = props.rows!;
-  if (props.defaultValue) {
-    rows = Math.max(props.defaultValue.split('\n').length, rows);
-  }
-  if (textareaRef.current) {
-    const value = textareaRef.current.value;
-    if (value) {
-      rows = Math.max(value.split('\n').length, rows);
-    }
-  }
+  const rows = Math.max((value || '').split('\n').length, props.rows || 0);
 
   return (
     <textarea
