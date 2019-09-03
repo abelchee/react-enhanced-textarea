@@ -203,8 +203,8 @@ const EnhancedTextarea: React.RefForwardingComponent<IEnhancedTextareaHandles, I
   function onChange() {
     if (props.onChange) {
       props.onChange(textareaRef.current!);
-      setValue(textareaRef.current!.value);
     }
+    setValue(textareaRef.current!.value);
   }
 
   const handlers = new EnhancedTextareaHandles(textareaRef, onChange, props.lineMarkers);
