@@ -167,7 +167,7 @@ class EnhancedTextareaHandles implements IEnhancedTextareaHandles {
       });
       if (text !== defaultText) {
         this.select({
-          from: selectionStart - prefix.length - 1,
+          from: selectionStart - prefix.length - 2,
           length: text.length,
         });
       }
