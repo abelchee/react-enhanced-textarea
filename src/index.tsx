@@ -43,6 +43,15 @@ export interface IEnhancedTextareaHandles {
   replaceText({ text, from, to }: { text: string; from: number; to: number }): void;
 
   toggleMarker({ prefix, suffix, defaultText }: { prefix: string; suffix: string; defaultText: string }): void;
+  toggleMultipleLineMarker({
+    prefix,
+    suffix,
+    defaultText,
+  }: {
+    prefix: string;
+    suffix: string;
+    defaultText: string;
+  }): void;
 
   toggleLineMarker(marker: string): void;
 }
@@ -133,6 +142,42 @@ class EnhancedTextareaHandles implements IEnhancedTextareaHandles {
     this.textarea!.value = `${textLeft}${text}${textRight}`;
     this.textarea!.selectionEnd = from + text.length;
     this.onChange();
+  }
+
+  public toggleMultipleLineMarker({
+    prefix,
+    suffix,
+    defaultText,
+  }: {
+    prefix: string;
+    suffix: string;
+    defaultText: string;
+  }) {
+    this.focus();
+    const text = this.selectedText || defaultText;
+    const { selectionStart, selectionEnd } = this;
+    if (
+      this.value.substr(selectionStart - prefix.length - 1, prefix.length) === prefix &&
+      this.value.substr(selectionEnd + 1, suffix.length) === suffix
+    ) {
+      this.replaceText({
+        from: selectionStart - prefix.length - 2,
+        text: text === defaultText ? '' : text,
+        to: selectionEnd + suffix.length + 2,
+      });
+      if (text !== defaultText) {
+        this.select({
+          from: selectionStart - prefix.length - 2,
+          length: text.length,
+        });
+      }
+    } else {
+      this.replaceSelectedText(`\n${prefix}\n${text}\n${suffix}\n`);
+      this.select({
+        from: selectionStart + prefix.length + 2,
+        length: text.length,
+      });
+    }
   }
 
   public toggleMarker({ prefix, suffix, defaultText }: { prefix: string; suffix: string; defaultText: string }) {
