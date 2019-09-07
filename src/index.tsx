@@ -11,9 +11,9 @@ export interface IEnhancedTextareaProps {
   placeholder?: string | undefined;
   autoFocus?: boolean;
   lineMarkers?: string[] | undefined;
-  onChange?: (textarea?: HTMLTextAreaElement) => {} | undefined;
-  onKeyDown?: (event: React.KeyboardEvent) => {} | undefined;
-  onKeyPress?: (event: React.KeyboardEvent) => {} | undefined;
+  onChange?: (textarea?: HTMLTextAreaElement) => void;
+  onKeyDown?: (event: React.KeyboardEvent) => void;
+  onKeyPress?: (event: React.KeyboardEvent) => void;
 }
 
 export interface IEnhancedTextareaHandles {
