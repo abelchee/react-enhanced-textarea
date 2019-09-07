@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { forwardRef, RefObject, useImperativeHandle, useRef, useState } from 'react';
+import { RefObject } from 'react';
 
 export interface IEnhancedTextareaProps {
   id?: string | undefined;
@@ -14,6 +14,10 @@ export interface IEnhancedTextareaProps {
   onChange?: (textarea: HTMLTextAreaElement) => void;
   onKeyDown?: (event: React.KeyboardEvent) => void;
   onKeyPress?: (event: React.KeyboardEvent) => void;
+}
+
+interface IEnhancedTextareaState {
+  value?: string;
 }
 
 export interface IEnhancedTextareaHandles {
@@ -56,15 +60,31 @@ export interface IEnhancedTextareaHandles {
   toggleLineMarker(marker: string): void;
 }
 
-class EnhancedTextareaHandles implements IEnhancedTextareaHandles {
+class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhancedTextareaState>
+  implements IEnhancedTextareaHandles {
   private textareaRef: RefObject<HTMLTextAreaElement>;
-  private onChange: () => void;
-  private lineMarkers: string[];
 
-  constructor(textareaRef: RefObject<HTMLTextAreaElement>, onChange: () => void, lineMarkers: string[] | undefined) {
-    this.textareaRef = textareaRef;
-    this.onChange = onChange;
-    this.lineMarkers = lineMarkers || [];
+  static defaultProps = {
+    autoFocus: false,
+    className: undefined,
+    defaultValue: undefined,
+    id: undefined,
+    lineMarkers: [],
+    onChange: undefined,
+    onKeyDown: undefined,
+    onKeyPress: undefined,
+    placeholder: undefined,
+    rows: 5,
+    style: undefined,
+    value: undefined,
+  };
+
+  constructor(props: IEnhancedTextareaProps) {
+    super(props);
+    this.textareaRef = React.createRef();
+    this.state = {
+      value: props.value || props.defaultValue,
+    };
   }
 
   public get textarea(): HTMLTextAreaElement | null {
@@ -213,7 +233,7 @@ class EnhancedTextareaHandles implements IEnhancedTextareaHandles {
     const text = this.value;
     const { selectionStart, selectionEnd } = this;
     const firstLineStart = text.substring(0, selectionStart).lastIndexOf('\n') + 1;
-    const otherLineMarkers = this.lineMarkers.filter(it => it !== marker);
+    const otherLineMarkers = (this.props.lineMarkers || []).filter(it => it !== marker);
     const newText = text
       .substring(firstLineStart, selectionEnd)
       .split('\n')
@@ -236,76 +256,53 @@ class EnhancedTextareaHandles implements IEnhancedTextareaHandles {
       to: selectionEnd,
     });
   }
-}
 
-const EnhancedTextarea: React.RefForwardingComponent<IEnhancedTextareaHandles, IEnhancedTextareaProps> = (
-  props,
-  ref,
-) => {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [value, setValue] = useState(props.value || props.defaultValue);
-
-  function onChange() {
-    if (props.onChange) {
-      props.onChange(textareaRef.current!);
+  onChange() {
+    if (this.props.onChange) {
+      this.props.onChange(this.textareaRef.current!);
     }
-    setValue(textareaRef.current!.value);
+    this.setState({
+      value: this.textareaRef.current!.value,
+    });
   }
 
-  const handlers = new EnhancedTextareaHandles(textareaRef, onChange, props.lineMarkers);
-
-  function onKeyDown(e: React.KeyboardEvent) {
+  onKeyDown(e: React.KeyboardEvent) {
     if (e.key === 'Enter') {
-      const startText = handlers.selectedFromLineStart;
-      const marker = (props.lineMarkers || []).find(m => startText.startsWith(m));
+      const startText = this.selectedFromLineStart;
+      const marker = (this.props.lineMarkers || []).find(m => startText.startsWith(m));
       if (marker) {
-        handlers.replaceSelectedText(`\n${marker}`);
+        this.replaceSelectedText(`\n${marker}`);
         e.preventDefault();
       }
     } else {
-      if (props.onKeyDown) {
-        props.onKeyDown(e);
+      if (this.props.onKeyDown) {
+        this.props.onKeyDown(e);
       }
     }
   }
 
-  useImperativeHandle(ref, () => handlers);
+  render() {
+    const props = this.props;
+    const rows = Math.max((this.state.value || '').split('\n').length, props.rows || 0);
+    return (
+      <textarea
+        id={props.id}
+        className={props.className}
+        ref={this.textareaRef}
+        style={props.style}
+        rows={rows}
+        wrap="virtual"
+        autoComplete="off"
+        defaultValue={props.defaultValue}
+        value={props.value}
+        onKeyPress={props.onKeyPress}
+        onKeyDown={this.onKeyDown}
+        onChange={this.onChange}
+        autoFocus={props.autoFocus}
+        placeholder={props.placeholder}
+      />
+    );
+  }
+}
 
-  const rows = Math.max((value || '').split('\n').length, props.rows || 0);
-
-  return (
-    <textarea
-      id={props.id}
-      className={props.className}
-      ref={textareaRef}
-      style={props.style}
-      rows={rows}
-      wrap="virtual"
-      autoComplete="off"
-      defaultValue={props.defaultValue}
-      value={props.value}
-      onKeyPress={props.onKeyPress}
-      onKeyDown={onKeyDown}
-      onChange={onChange}
-      autoFocus={props.autoFocus}
-      placeholder={props.placeholder}
-    />
-  );
-};
-
-EnhancedTextarea.defaultProps = {
-  autoFocus: false,
-  className: undefined,
-  defaultValue: undefined,
-  id: undefined,
-  lineMarkers: [],
-  onChange: undefined,
-  onKeyDown: undefined,
-  onKeyPress: undefined,
-  placeholder: undefined,
-  rows: 5,
-  style: undefined,
-  value: undefined,
-};
-
-export default forwardRef(EnhancedTextarea);
+export default EnhancedTextarea;
