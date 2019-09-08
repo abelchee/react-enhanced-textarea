@@ -20,48 +20,7 @@ interface IEnhancedTextareaState {
   value?: string;
 }
 
-export interface IEnhancedTextareaHandles {
-  readonly textarea: HTMLTextAreaElement | null;
-  readonly selectedText: string;
-  readonly selectedFromLineStart: string;
-  selectionStart: number;
-  selectionEnd: number;
-  value: string;
-
-  focus(): void;
-
-  replaceSelectedText(text: string): void;
-
-  select({
-    from,
-    to,
-    length,
-  }: {
-    from: number;
-    to?: number | null | undefined;
-    length?: number | null | undefined;
-  }): void;
-
-  putCursorTo(location: number): void;
-
-  replaceText({ text, from, to }: { text: string; from: number; to: number }): void;
-
-  toggleMarker({ prefix, suffix, defaultText }: { prefix: string; suffix: string; defaultText: string }): void;
-  toggleMultipleLineMarker({
-    prefix,
-    suffix,
-    defaultText,
-  }: {
-    prefix: string;
-    suffix: string;
-    defaultText: string;
-  }): void;
-
-  toggleLineMarker(marker: string): void;
-}
-
-class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhancedTextareaState>
-  implements IEnhancedTextareaHandles {
+class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhancedTextareaState> {
   public static defaultProps = {
     autoFocus: false,
     className: undefined,
