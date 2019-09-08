@@ -81,6 +81,8 @@ class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhanced
     this.state = {
       value: props.value || props.defaultValue,
     };
+    this.onChange = this.onChange.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   public focus(): void {
