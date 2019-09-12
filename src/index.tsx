@@ -144,6 +144,24 @@ class EnhancedTextareaHandles implements IEnhancedTextareaHandles {
     this.onChange();
   }
 
+  public toggleTemplate(template: string) {
+    this.focus();
+    if (this.selectedText === template) {
+      this.replaceSelectedText('');
+    } else {
+      this.replaceSelectedText(template);
+    }
+  }
+
+  public toggleMultipleLineTemplate(template: string) {
+    this.focus();
+    if (this.selectedText === `\n${template}\n`) {
+      this.replaceSelectedText('');
+    } else {
+      this.replaceSelectedText(`\n${template}\n`);
+    }
+  }
+
   public toggleMultipleLineMarker({
     prefix,
     suffix,
