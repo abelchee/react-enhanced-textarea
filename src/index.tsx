@@ -73,6 +73,7 @@ class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhanced
   public set selectionEnd(position) {
     this.textarea!.selectionEnd = position;
   }
+
   private textareaRef: RefObject<HTMLTextAreaElement>;
 
   constructor(props: IEnhancedTextareaProps) {
@@ -130,6 +131,11 @@ class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhanced
       this.replaceSelectedText('');
     } else {
       this.replaceSelectedText(template);
+      const { selectionStart } = this;
+      this.select({
+        from: selectionStart,
+        length: template.length,
+      });
     }
   }
 
@@ -139,6 +145,11 @@ class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhanced
       this.replaceSelectedText('');
     } else {
       this.replaceSelectedText(`\n${template}\n`);
+      const { selectionStart } = this;
+      this.select({
+        from: selectionStart + 1,
+        length: template.length,
+      });
     }
   }
 
