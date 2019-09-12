@@ -127,11 +127,11 @@ class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhanced
 
   public toggleTemplate(template: string) {
     this.focus();
+    const { selectionStart } = this;
     if (this.selectedText === template) {
       this.replaceSelectedText('');
     } else {
       this.replaceSelectedText(template);
-      const { selectionStart } = this;
       this.select({
         from: selectionStart,
         length: template.length,
@@ -141,11 +141,11 @@ class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhanced
 
   public toggleMultipleLineTemplate(template: string) {
     this.focus();
+    const { selectionStart } = this;
     if (this.selectedText === `\n${template}\n`) {
       this.replaceSelectedText('');
     } else {
       this.replaceSelectedText(`\n${template}\n`);
-      const { selectionStart } = this;
       this.select({
         from: selectionStart + 1,
         length: template.length,
