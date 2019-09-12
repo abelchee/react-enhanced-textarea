@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { forwardRef, RefObject, useImperativeHandle, useRef, useState } from 'react';
+import { RefObject } from 'react';
 
 export interface IEnhancedTextareaProps {
   id?: string | undefined;
@@ -11,68 +11,33 @@ export interface IEnhancedTextareaProps {
   placeholder?: string | undefined;
   autoFocus?: boolean;
   lineMarkers?: string[] | undefined;
-  onChange?: (textarea?: HTMLTextAreaElement) => {} | undefined;
-  onKeyDown?: (event: React.KeyboardEvent) => {} | undefined;
-  onKeyPress?: (event: React.KeyboardEvent) => {} | undefined;
+  onChange?: (textarea: HTMLTextAreaElement) => void;
+  onKeyDown?: (event: React.KeyboardEvent) => void;
+  onKeyPress?: (event: React.KeyboardEvent) => void;
 }
 
-export interface IEnhancedTextareaHandles {
-  readonly textarea: HTMLTextAreaElement | null;
-  readonly selectedText: string;
-  readonly selectedFromLineStart: string;
-  selectionStart: number;
-  selectionEnd: number;
-  value: string;
-
-  focus(): void;
-
-  replaceSelectedText(text: string): void;
-
-  select({
-    from,
-    to,
-    length,
-  }: {
-    from: number;
-    to?: number | null | undefined;
-    length?: number | null | undefined;
-  }): void;
-
-  putCursorTo(location: number): void;
-
-  replaceText({ text, from, to }: { text: string; from: number; to: number }): void;
-
-  toggleMarker({ prefix, suffix, defaultText }: { prefix: string; suffix: string; defaultText: string }): void;
-  toggleMultipleLineMarker({
-    prefix,
-    suffix,
-    defaultText,
-  }: {
-    prefix: string;
-    suffix: string;
-    defaultText: string;
-  }): void;
-
-  toggleLineMarker(marker: string): void;
+interface IEnhancedTextareaState {
+  value?: string;
 }
 
-class EnhancedTextareaHandles implements IEnhancedTextareaHandles {
-  private textareaRef: RefObject<HTMLTextAreaElement>;
-  private onChange: () => void;
-  private lineMarkers: string[];
-
-  constructor(textareaRef: RefObject<HTMLTextAreaElement>, onChange: () => void, lineMarkers: string[] | undefined) {
-    this.textareaRef = textareaRef;
-    this.onChange = onChange;
-    this.lineMarkers = lineMarkers || [];
-  }
+class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhancedTextareaState> {
+  public static defaultProps = {
+    autoFocus: false,
+    className: undefined,
+    defaultValue: undefined,
+    id: undefined,
+    lineMarkers: [],
+    onChange: undefined,
+    onKeyDown: undefined,
+    onKeyPress: undefined,
+    placeholder: undefined,
+    rows: 5,
+    style: undefined,
+    value: undefined,
+  };
 
   public get textarea(): HTMLTextAreaElement | null {
     return this.textareaRef.current;
-  }
-
-  public focus(): void {
-    this.textarea!.focus();
   }
 
   public get value() {
@@ -107,6 +72,21 @@ class EnhancedTextareaHandles implements IEnhancedTextareaHandles {
 
   public set selectionEnd(position) {
     this.textarea!.selectionEnd = position;
+  }
+  private textareaRef: RefObject<HTMLTextAreaElement>;
+
+  constructor(props: IEnhancedTextareaProps) {
+    super(props);
+    this.textareaRef = React.createRef();
+    this.state = {
+      value: props.value || props.defaultValue,
+    };
+    this.onChange = this.onChange.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+  }
+
+  public focus(): void {
+    this.textarea!.focus();
   }
 
   public replaceSelectedText(text: string) {
@@ -231,7 +211,7 @@ class EnhancedTextareaHandles implements IEnhancedTextareaHandles {
     const text = this.value;
     const { selectionStart, selectionEnd } = this;
     const firstLineStart = text.substring(0, selectionStart).lastIndexOf('\n') + 1;
-    const otherLineMarkers = this.lineMarkers.filter(it => it !== marker);
+    const otherLineMarkers = (this.props.lineMarkers || []).filter(it => it !== marker);
     const newText = text
       .substring(firstLineStart, selectionEnd)
       .split('\n')
@@ -254,76 +234,53 @@ class EnhancedTextareaHandles implements IEnhancedTextareaHandles {
       to: selectionEnd,
     });
   }
-}
 
-const EnhancedTextarea: React.RefForwardingComponent<IEnhancedTextareaHandles, IEnhancedTextareaProps> = (
-  props,
-  ref,
-) => {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [value, setValue] = useState(props.value || props.defaultValue);
-
-  function onChange() {
-    if (props.onChange) {
-      props.onChange(textareaRef.current!);
-    }
-    setValue(textareaRef.current!.value);
+  public render() {
+    const props = this.props;
+    const rows = Math.max((this.state.value || '').split('\n').length, props.rows || 0);
+    return (
+      <textarea
+        id={props.id}
+        className={props.className}
+        ref={this.textareaRef}
+        style={props.style}
+        rows={rows}
+        wrap="virtual"
+        autoComplete="off"
+        defaultValue={props.defaultValue}
+        value={props.value}
+        onKeyPress={props.onKeyPress}
+        onKeyDown={this.onKeyDown}
+        onChange={this.onChange}
+        autoFocus={props.autoFocus}
+        placeholder={props.placeholder}
+      />
+    );
   }
 
-  const handlers = new EnhancedTextareaHandles(textareaRef, onChange, props.lineMarkers);
+  private onChange() {
+    if (this.props.onChange) {
+      this.props.onChange(this.textareaRef.current!);
+    }
+    this.setState({
+      value: this.textareaRef.current!.value,
+    });
+  }
 
-  function onKeyDown(e: React.KeyboardEvent) {
+  private onKeyDown(e: React.KeyboardEvent) {
     if (e.key === 'Enter') {
-      const startText = handlers.selectedFromLineStart;
-      const marker = (props.lineMarkers || []).find(m => startText.startsWith(m));
+      const startText = this.selectedFromLineStart;
+      const marker = (this.props.lineMarkers || []).find(m => startText.startsWith(m));
       if (marker) {
-        handlers.replaceSelectedText(`\n${marker}`);
+        this.replaceSelectedText(`\n${marker}`);
         e.preventDefault();
       }
     } else {
-      if (props.onKeyDown) {
-        props.onKeyDown(e);
+      if (this.props.onKeyDown) {
+        this.props.onKeyDown(e);
       }
     }
   }
+}
 
-  useImperativeHandle(ref, () => handlers);
-
-  const rows = Math.max((value || '').split('\n').length, props.rows || 0);
-
-  return (
-    <textarea
-      id={props.id}
-      className={props.className}
-      ref={textareaRef}
-      style={props.style}
-      rows={rows}
-      wrap="virtual"
-      autoComplete="off"
-      defaultValue={props.defaultValue}
-      value={props.value}
-      onKeyPress={props.onKeyPress}
-      onKeyDown={onKeyDown}
-      onChange={onChange}
-      autoFocus={props.autoFocus}
-      placeholder={props.placeholder}
-    />
-  );
-};
-
-EnhancedTextarea.defaultProps = {
-  autoFocus: false,
-  className: undefined,
-  defaultValue: undefined,
-  id: undefined,
-  lineMarkers: [],
-  onChange: undefined,
-  onKeyDown: undefined,
-  onKeyPress: undefined,
-  placeholder: undefined,
-  rows: 5,
-  style: undefined,
-  value: undefined,
-};
-
-export default forwardRef(EnhancedTextarea);
+export default EnhancedTextarea;
