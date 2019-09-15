@@ -14,6 +14,10 @@ export interface IEnhancedTextareaProps {
   onChange?: (textarea: HTMLTextAreaElement) => void;
   onKeyDown?: (event: React.KeyboardEvent) => void;
   onKeyPress?: (event: React.KeyboardEvent) => void;
+  onCopy?: (event: React.ClipboardEvent) => void;
+  onCopyCapture?: (event: React.ClipboardEvent) => void;
+  onPaste?: (event: React.ClipboardEvent) => void;
+  onPasteCapture?: (event: React.ClipboardEvent) => void;
 }
 
 interface IEnhancedTextareaState {
@@ -270,6 +274,10 @@ class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhanced
         onChange={this.onChange}
         autoFocus={props.autoFocus}
         placeholder={props.placeholder}
+        onPaste={props.onPaste}
+        onPasteCapture={props.onPasteCapture}
+        onCopy={props.onCopy}
+        onCopyCapture={props.onCopyCapture}
       />
     );
   }
