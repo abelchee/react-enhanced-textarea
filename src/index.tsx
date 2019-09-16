@@ -16,8 +16,8 @@ export interface IEnhancedTextareaProps {
   onKeyPress?: (event: React.KeyboardEvent) => void;
   onCopy?: (event: React.ClipboardEvent) => void;
   onCopyCapture?: (event: React.ClipboardEvent) => void;
-  onPaste?: (event: React.ClipboardEvent) => void;
-  onPasteCapture?: (event: React.ClipboardEvent) => void;
+  onPaste?: (event: React.ClipboardEvent) => void | boolean;
+  onPasteCapture?: (event: React.ClipboardEvent) => void | boolean;
 }
 
 interface IEnhancedTextareaState {
