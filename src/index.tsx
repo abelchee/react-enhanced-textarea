@@ -226,6 +226,10 @@ class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhanced
     }
   }
 
+  public append(content: string) {
+    this.textarea!.value += content;
+  }
+
   public toggleLineMarker(marker: string) {
     this.focus();
     const text = this.value;
