@@ -227,7 +227,7 @@ class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhanced
   }
 
   public append(content: string) {
-    this.textarea!.value += content;
+    this.value += content;
   }
 
   public toggleLineMarker(marker: string) {
