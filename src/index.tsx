@@ -11,7 +11,7 @@ export interface IEnhancedTextareaProps {
   placeholder?: string | undefined;
   autoFocus?: boolean;
   lineMarkers?: string[] | undefined;
-  onChange?: (textarea: HTMLTextAreaElement) => void;
+  onChange?: (value: string) => void;
   onKeyDown?: (event: React.KeyboardEvent) => void;
   onKeyPress?: (event: React.KeyboardEvent) => void;
   onCopy?: (event: React.ClipboardEvent) => void;
@@ -288,7 +288,7 @@ class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhanced
 
   private onChange() {
     if (this.props.onChange) {
-      this.props.onChange(this.textareaRef.current!);
+      this.props.onChange(this.textareaRef.current!.value);
     }
     this.setState({
       value: this.textareaRef.current!.value,
