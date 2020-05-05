@@ -9,3 +9,4 @@ npm install react-enhanced-textarea
 ```
 
 
+# git squash merge test
