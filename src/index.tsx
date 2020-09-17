@@ -235,16 +235,16 @@ class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhanced
     const text = this.value;
     const { selectionStart, selectionEnd } = this;
     const firstLineStart = text.substring(0, selectionStart).lastIndexOf('\n') + 1;
-    const otherLineMarkers = (this.props.lineMarkers || []).filter(it => it !== marker);
+    const otherLineMarkers = (this.props.lineMarkers || []).filter((it) => it !== marker);
     const newText = text
       .substring(firstLineStart, selectionEnd)
       .split('\n')
-      .map(line => {
+      .map((line) => {
         if (line.indexOf(marker) === 0) {
           return line.substring(marker.length);
         }
 
-        const currentMarker = otherLineMarkers.find(it => line.indexOf(it) === 0);
+        const currentMarker = otherLineMarkers.find((it) => line.indexOf(it) === 0);
         if (currentMarker) {
           return marker + line.substring(currentMarker.length);
         }
@@ -298,7 +298,7 @@ class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhanced
   private onKeyDown(e: React.KeyboardEvent) {
     if (e.key === 'Enter') {
       const startText = this.selectedFromLineStart;
-      const marker = (this.props.lineMarkers || []).find(m => startText.startsWith(m));
+      const marker = (this.props.lineMarkers || []).find((m) => startText.startsWith(m));
       if (marker) {
         this.replaceSelectedText(`\n${marker}`);
         e.preventDefault();

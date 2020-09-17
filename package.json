@@ -1,6 +1,6 @@
 {
   "name": "react-enhanced-textarea",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "React enhanced textarea",
   "main": "build/index.js",
   "module": "build/index.es.js",
