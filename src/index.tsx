@@ -6,6 +6,7 @@ export interface IEnhancedTextareaProps {
   className?: string | undefined;
   style?: object | undefined;
   rows?: number;
+  maxLength?: number;
   defaultValue?: string | undefined;
   value?: string | undefined;
   placeholder?: string | undefined;
@@ -30,6 +31,7 @@ class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhanced
     className: undefined,
     defaultValue: undefined,
     id: undefined,
+    maxLength: undefined,
     lineMarkers: [],
     onChange: undefined,
     onKeyDown: undefined,
@@ -282,6 +284,7 @@ class EnhancedTextarea extends React.Component<IEnhancedTextareaProps, IEnhanced
         onPasteCapture={props.onPasteCapture}
         onCopy={props.onCopy}
         onCopyCapture={props.onCopyCapture}
+        maxLength={props.maxLength}
       />
     );
   }
